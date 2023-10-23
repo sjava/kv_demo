@@ -42,10 +42,23 @@ impl Storage for MemTable {
         let table = self.get_or_create_table(table);
         Ok(table
             .iter()
-            .map(|pair| Kvpair::new(pair.key(), pair.value().clone()))
+            .map(|v| Kvpair::new(v.key(), v.value().clone()))
             .collect())
     }
     fn get_iter(&self, table: &str) -> Result<Box<dyn Iterator<Item = Kvpair>>, KvError> {
         todo!();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn get_or_create_table_should_work() {
+        let store = MemTable::new();
+        assert!(!store.tables.contains_key("t1"));
+        store.get_or_create_table("t1");
+        assert!(store.tables.contains_key("t1"));
     }
 }
